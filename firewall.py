@@ -182,7 +182,7 @@ print('Socket created!')
 s.bind(('eth0',0))
 
 while 1:
-    packet,_ = s.recvfrom(65536)
+    packet, _ = s.recvfrom(65536)
 
     sum_packages += 1
 
