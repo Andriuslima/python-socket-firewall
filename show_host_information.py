@@ -1,13 +1,18 @@
 import socket
-import time
-from platform import python_version
+import sys
+from binascii import hexlify
 
-print("Retrieving host information...")
-print(python_version())
+interface = sys.argv[1]
 
-hostname = socket.gethostname()
-ip_address_info = socket.gethostbyname_ex(hostname)
-ip_address = socket.gethostbyname(hostname)
+print("Retrieving host information from interface ", interface)
+
+s = socket.socket(socket.AF_PACKET, socket.SOCK_RAW)
+s.bind((interface, 0))
+
+hostname = s.getsockname()
+mac = s.getsockname()[4]
 print("Hostname: ", hostname)
-print("IP Address: ", ip_address)
-print("Extra info: ", ip_address_info)
+print(str(type(mac)))
+print("Mac: ", hexlify(mac))
+
+s.close()

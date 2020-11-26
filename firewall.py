@@ -1,11 +1,6 @@
-from struct import unpack
-from math import inf
-from binascii import hexlify
-import signal
-import heapq
+from struct import unpack, pack
 import socket
 import sys
-import binascii
 
 ETH_P_ALL = 0x0003
 ETH_HEADER_LEN = 14
@@ -24,8 +19,9 @@ TCP_HEADER_PATTERN = "!HHLLBBHHH"
 UDP_HEADER_PATTERN = "!HHHH"
 ICMP_HEADER_PATTERN = "!BBBBH"
 
-INTERFACE = sys.argv[1]
+INTERFACE = sys.argv[1].strip()
 HOST_MAC = ""
+GATEWAY_MAC = "8c:44:4f:7b:26:2e"
 
 ICMP_TYPES = {
     0: "Echo Reply",
@@ -34,6 +30,8 @@ ICMP_TYPES = {
 }
 
 SUPPORTED_PROTOCOLS = [TCP_PROTOCOL_NUMBER, UDP_PROTOCOL_NUMBER, ICMP_PROTOCOL_NUMBER]
+
+mac_to_bytes = lambda m: bytes.fromhex(m.replace(':', ''))
 
 
 def bytes_to_mac(mac):
@@ -77,7 +75,6 @@ def search_and_log_icmp(packet, protocol, iph_length):
         icmp_id = icmp[3]
         icmp_sequence = icmp[4]
 
-        print("*"*5 + "ICMP" + "*"*4)
         print("Protocol Name: ICMP")
         print("Type: ", ICMP_TYPES.get(icmp_type))
         if icmp_type == 0 or icmp_type == 8:
@@ -107,16 +104,11 @@ while 1:
     eth_header = packet[0:ETH_HEADER_LEN]
     eth = unpack(ETHERNET_HEADER_PATTERN, eth_header)
     protocol = eth[2]
-    mac_dst_bytes = eth[1]
-    mac_src_bytes = eth[0]
+    mac_dst_bytes = eth[0]
+    mac_src_bytes = eth[1]
 
-    # print(f"Received packet designated to {mac_dst_bytes}, my mac is {HOST_MAC}")
-    # print(f"With protocol {protocol}")
 
-    # if mac_dst_bytes != HOST_MAC or protocol != IP_PROTOCOL_NUMBER:
-    #     continue
-
-    if protocol == IP_PROTOCOL_NUMBER:
+    if protocol == IP_PROTOCOL_NUMBER and mac_dst_bytes == HOST_MAC:
         ip_header = unpack(IP_HEADER_PATTERN, packet[ETH_HEADER_LEN:20+ETH_HEADER_LEN])
         version_ihl = ip_header[0]
         version = version_ihl >> 4
@@ -130,9 +122,7 @@ while 1:
             ip_pack_type = eth[2]
             print("*"*5 + "IP PACKET" + "*"*5)
             print("MAC Dst: ", bytes_to_mac(mac_dst_bytes))
-            print("MAC Dst Raw: ", hexlify(mac_dst_bytes))
             print("MAC Src: ", bytes_to_mac(mac_src_bytes))
-            print("MAC Src Raw: ", hexlify(mac_src_bytes))
             print("Type: ", hex(ip_pack_type))
             print("IP Dst: "+d_addr)
             print("IP Src: "+s_addr)
@@ -144,3 +134,15 @@ while 1:
 
             print("*"*10)
 
+
+            # Ethernet Header
+            dest_mac = mac_to_bytes(GATEWAY_MAC)
+            source_mac = HOST_MAC
+            protocol = IP_PROTOCOL_NUMBER
+
+            eth_hdr = pack("!6s6sH", dest_mac, source_mac, protocol)
+
+            red_packet = eth_hdr + packet[ETH_HEADER_LEN+1:]
+
+            x = s.send(red_packet)
+            print(f"Packate redirected to {GATEWAY_MAC} with ans: {x}")
