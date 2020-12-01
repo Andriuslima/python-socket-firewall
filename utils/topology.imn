@@ -1,0 +1,949 @@
+node n1 {
+    type router
+    model router
+    network-config {
+	hostname R1
+	!
+	interface eth3
+	!
+	interface eth2
+	!
+	interface eth0
+	!
+	interface eth1
+	!
+    }
+    canvas c1
+    iconcoords {436.0 212.0}
+    labelcoords {436.0 244.0}
+    services {zebra IPForward}
+    custom-config {
+	custom-config-id service:zebra
+	custom-command zebra
+	config {
+	files=('/usr/local/etc/quagga/Quagga.conf', 'quaggaboot.sh', '/usr/local/etc/quagga/vtysh.conf', )
+	}
+    }
+    custom-config {
+	custom-config-id service:zebra:/usr/local/etc/quagga/Quagga.conf
+	custom-command /usr/local/etc/quagga/Quagga.conf
+	config {
+	interface eth0
+	   ip address 200.20.10.1/24
+	!
+	interface eth1
+	   ip address 200.20.1.2/24
+	!
+	interface eth2
+	   ip address 200.20.11.1/24
+	!
+	interface eth3
+	   ip address 200.20.12.1/24
+	!
+	
+	ip route 200.20.10.0/24 eth0
+	ip route 200.20.11.0/24 eth2
+	ip route 200.20.12.0/24 eth3
+	
+	ip route 200.20.1.0/24 eth1
+	
+	ip route 0.0.0.0/0 200.20.1.1
+	}
+    }
+    interface-peer {eth1 n4}
+    interface-peer {eth0 n2}
+    interface-peer {eth2 n13}
+    interface-peer {eth3 n10}
+}
+
+node n3 {
+    type router
+    model host
+    network-config {
+	hostname n1
+	!
+	interface eth0
+	!
+    }
+    canvas c1
+    iconcoords {504.0 96.0}
+    labelcoords {504.0 128.0}
+    services {UserDefined}
+    custom-config {
+	custom-config-id service:UserDefined
+	custom-command UserDefined
+	config {
+	files=('setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	ip addr add 200.20.10.10/24 dev eth0
+	
+	ip route add default via 200.20.10.1 dev eth0
+	}
+    }
+    interface-peer {eth0 n2}
+}
+
+node n4 {
+    type router
+    model router
+    network-config {
+	hostname r10
+	!
+	interface eth2
+	!
+	interface eth1
+	!
+	interface eth0
+	!
+    }
+    canvas c1
+    iconcoords {780.0 212.0}
+    labelcoords {780.0 244.0}
+    services {zebra IPForward}
+    interface-peer {eth0 n5}
+    interface-peer {eth1 n1}
+    custom-config {
+	custom-config-id service:zebra
+	custom-command zebra
+	config {
+	files=('/usr/local/etc/quagga/Quagga.conf', 'quaggaboot.sh', '/usr/local/etc/quagga/vtysh.conf', )
+	}
+    }
+    custom-config {
+	custom-config-id service:zebra:/usr/local/etc/quagga/Quagga.conf
+	custom-command /usr/local/etc/quagga/Quagga.conf
+	config {
+	interface eth0
+	   ip address 210.40.30.2/16
+	!
+	interface eth1
+	   ip address 200.20.1.1/24
+	!
+	interface eth2
+	   ip address 200.20.2.1/24
+	!
+	interface eth3
+	   ip address 200.20.3.1/24
+	!
+	 
+	ip route 210.40.0.0/16 eth0
+	
+	ip route 200.20.1.0/24 eth1
+	ip route 200.20.2.0/24 eth2
+	ip route 200.20.3.0/24 eth3
+	
+	ip route 200.20.10.0/24 200.20.1.2
+	ip route 200.20.11.0/24 200.20.1.2
+	ip route 200.20.12.0/24 200.20.1.2
+	ip route 200.20.20.0/24 200.20.2.2
+	ip route 200.20.21.0/24 200.20.2.2
+	
+	ip route 0.0.0.0/0 210.40.30.1
+	
+	}
+    }
+    interface-peer {eth2 n6}
+}
+
+node n5 {
+    type router
+    model host
+    network-config {
+	hostname internet
+	!
+	interface eth0
+	!
+    }
+    canvas c1
+    iconcoords {778.0 98.0}
+    labelcoords {778.0 130.0}
+    interface-peer {eth0 n4}
+    services {UserDefined}
+    custom-config {
+	custom-config-id service:UserDefined
+	custom-command UserDefined
+	config {
+	files=('setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	ip addr add 210.40.30.1/16 dev eth0
+	
+	ip route add default via 210.40.30.2 dev eth0
+	}
+    }
+}
+
+node n6 {
+    type router
+    model router
+    network-config {
+	hostname R2
+	!
+	interface eth2
+	!
+	interface eth1
+	!
+	interface eth0
+	!
+    }
+    canvas c1
+    iconcoords {1119.0 211.0}
+    labelcoords {1119.0 243.0}
+    services {zebra IPForward}
+    interface-peer {eth0 n7}
+    interface-peer {eth1 n4}
+    custom-config {
+	custom-config-id service:zebra
+	custom-command zebra
+	config {
+	files=('/usr/local/etc/quagga/Quagga.conf', 'quaggaboot.sh', '/usr/local/etc/quagga/vtysh.conf', )
+	}
+    }
+    custom-config {
+	custom-config-id service:zebra:/usr/local/etc/quagga/Quagga.conf
+	custom-command /usr/local/etc/quagga/Quagga.conf
+	config {
+	interface eth0
+	   ip address 200.20.20.1/24
+	!
+	interface eth1
+	   ip address 200.20.2.2/24
+	!
+	interface eth2
+	   ip address 200.20.21.1/24
+	!
+	
+	ip route 200.20.20.0/24 eth0
+	ip route 200.20.21.0/24 eth2
+	ip route 200.20.2.0/24 eth1
+	ip route 0.0.0.0/0 200.20.2.1
+	
+	}
+    }
+    interface-peer {eth2 n12}
+}
+
+node n7 {
+    type hub
+    network-config {
+	hostname h2
+	!
+    }
+    canvas c1
+    iconcoords {995.0 283.0}
+    labelcoords {995.0 307.0}
+    interface-peer {e0 n6}
+    interface-peer {e1 n8}
+    interface-peer {e2 n18}
+}
+
+node n8 {
+    type router
+    model host
+    network-config {
+	hostname n7
+	!
+	interface eth0
+	!
+    }
+    canvas c1
+    iconcoords {887.0 335.0}
+    labelcoords {887.0 367.0}
+    interface-peer {eth0 n7}
+    custom-config {
+	custom-config-id service:UserDefined
+	custom-command UserDefined
+	config {
+	files=('setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	ip addr add 200.20.20.10/24 dev eth0
+	
+	ip route add default via 200.20.20.1 dev eth0
+	}
+    }
+    services {UserDefined}
+}
+
+node n12 {
+    type hub
+    network-config {
+	hostname h1
+	!
+    }
+    canvas c1
+    iconcoords {1172.0 284.0}
+    labelcoords {1172.0 308.0}
+    interface-peer {e0 n6}
+    interface-peer {e1 n14}
+    interface-peer {e2 n19}
+}
+
+node n2 {
+    type lanswitch
+    network-config {
+	hostname s1
+	!
+    }
+    canvas c1
+    iconcoords {356.0 100.0}
+    labelcoords {356.0 124.0}
+    interface-peer {e0 n1}
+    interface-peer {e1 n3}
+    interface-peer {e2 n15}
+}
+
+node n13 {
+    type lanswitch
+    network-config {
+	hostname s2
+	!
+    }
+    canvas c1
+    iconcoords {272.0 212.0}
+    labelcoords {272.0 236.0}
+    interface-peer {e0 n1}
+    interface-peer {e1 n9}
+    interface-peer {e2 n16}
+}
+
+node n9 {
+    type router
+    model host
+    network-config {
+	hostname n3
+	!
+	interface eth0
+	!
+    }
+    canvas c1
+    iconcoords {114.0 184.0}
+    labelcoords {114.0 216.0}
+    interface-peer {eth0 n13}
+    services {UserDefined}
+    custom-config {
+	custom-config-id service:UserDefined
+	custom-command UserDefined
+	config {
+	files=('setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	ip addr add 200.20.11.10/24 dev eth0
+	
+	ip route add default via 200.20.11.1 dev eth0
+	}
+    }
+}
+
+node n10 {
+    type lanswitch
+    network-config {
+	hostname s3
+	!
+    }
+    canvas c1
+    iconcoords {384.0 336.0}
+    labelcoords {384.0 360.0}
+    interface-peer {e0 n1}
+    interface-peer {e1 n11}
+    interface-peer {e2 n17}
+}
+
+node n11 {
+    type router
+    model host
+    network-config {
+	hostname n5
+	!
+	interface eth0
+	!
+    }
+    canvas c1
+    iconcoords {174.0 378.0}
+    labelcoords {174.0 410.0}
+    interface-peer {eth0 n10}
+    custom-config {
+	custom-config-id service:UserDefined
+	custom-command UserDefined
+	config {
+	files=('setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	ip addr add 200.20.12.10/24 dev eth0
+	
+	ip route add default via 200.20.12.1 dev eth0
+	}
+    }
+    services {UserDefined}
+}
+
+node n14 {
+    type router
+    model host
+    network-config {
+	hostname n9
+	!
+	interface eth0
+	!
+    }
+    canvas c1
+    iconcoords {1126.0 360.0}
+    labelcoords {1126.0 392.0}
+    interface-peer {eth0 n12}
+    custom-config {
+	custom-config-id service:UserDefined
+	custom-command UserDefined
+	config {
+	files=('setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	ip addr add 200.20.21.10/24 dev eth0
+	
+	ip route add default via 200.20.21.1 dev eth0
+	}
+    }
+    services {UserDefined}
+}
+
+node n15 {
+    type router
+    model host
+    network-config {
+	hostname n2
+	!
+	interface eth0
+	!
+    }
+    canvas c1
+    iconcoords {196.0 96.0}
+    labelcoords {196.0 128.0}
+    interface-peer {eth0 n2}
+    custom-config {
+	custom-config-id service:UserDefined
+	custom-command UserDefined
+	config {
+	files=('setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	ip addr add 200.20.10.11/24 dev eth0
+	
+	ip route add default via 200.20.10.1 dev eth0
+	}
+    }
+    services {UserDefined}
+}
+
+node n16 {
+    type router
+    model host
+    network-config {
+	hostname n4
+	!
+	interface eth0
+	!
+    }
+    canvas c1
+    iconcoords {108.0 260.0}
+    labelcoords {108.0 292.0}
+    interface-peer {eth0 n13}
+    custom-config {
+	custom-config-id service:UserDefined
+	custom-command UserDefined
+	config {
+	files=('setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	ip addr add 200.20.11.11/24 dev eth0
+	
+	ip route add default via 200.20.11.1 dev eth0
+	}
+    }
+    services {UserDefined}
+}
+
+node n17 {
+    type router
+    model host
+    network-config {
+	hostname n6
+	!
+	interface eth0
+	!
+    }
+    canvas c1
+    iconcoords {510.0 392.0}
+    labelcoords {510.0 424.0}
+    interface-peer {eth0 n10}
+    custom-config {
+	custom-config-id service:UserDefined
+	custom-command UserDefined
+	config {
+	files=('setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	ip addr add 200.20.12.11/24 dev eth0
+	
+	ip route add default via 200.20.12.1 dev eth0
+	}
+    }
+    services {UserDefined}
+}
+
+node n18 {
+    type router
+    model host
+    network-config {
+	hostname n8
+	!
+	interface eth0
+	!
+    }
+    canvas c1
+    iconcoords {1018.0 356.0}
+    labelcoords {1018.0 388.0}
+    interface-peer {eth0 n7}
+    custom-config {
+	custom-config-id service:UserDefined
+	custom-command UserDefined
+	config {
+	files=('setupsh', 'setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	ip addr add 200.20.20.11/24 dev eth0
+	
+	ip route add default via 200.20.20.1 dev eth0
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setupsh
+	custom-command setupsh
+	config {
+	ip addr add 200.20.20.11/24 dev eth0
+	
+	ip route add default via 200.20.20.1 dev eth0
+	}
+    }
+    services {UserDefined}
+}
+
+node n19 {
+    type router
+    model host
+    network-config {
+	hostname n10
+	!
+	interface eth0
+	!
+    }
+    canvas c1
+    iconcoords {1288.0 352.0}
+    labelcoords {1288.0 384.0}
+    interface-peer {eth0 n12}
+    custom-config {
+	custom-config-id service:UserDefined
+	custom-command UserDefined
+	config {
+	files=('setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	ip addr add 200.20.21.11/24 dev eth0
+	
+	ip route add default via 200.20.21.1 dev eth0
+	}
+    }
+    services {UserDefined}
+}
+
+link l3 {
+    nodes {n5 n4}
+    bandwidth 0
+}
+
+link l4 {
+    nodes {n4 n1}
+    bandwidth 0
+}
+
+link l5 {
+    nodes {n6 n7}
+    bandwidth 0
+}
+
+link l6 {
+    nodes {n6 n4}
+    bandwidth 0
+}
+
+link l7 {
+    nodes {n8 n7}
+    bandwidth 0
+}
+
+link l11 {
+    nodes {n6 n12}
+    bandwidth 0
+}
+
+link l1 {
+    nodes {n1 n2}
+    bandwidth 0
+}
+
+link l2 {
+    nodes {n3 n2}
+    bandwidth 0
+}
+
+link l12 {
+    nodes {n1 n13}
+    bandwidth 0
+}
+
+link l8 {
+    nodes {n9 n13}
+    bandwidth 0
+}
+
+link l9 {
+    nodes {n1 n10}
+    bandwidth 0
+}
+
+link l10 {
+    nodes {n11 n10}
+    bandwidth 0
+}
+
+link l13 {
+    nodes {n12 n14}
+    bandwidth 0
+}
+
+link l14 {
+    nodes {n2 n15}
+    bandwidth 0
+}
+
+link l15 {
+    nodes {n13 n16}
+    bandwidth 0
+}
+
+link l16 {
+    nodes {n10 n17}
+    bandwidth 0
+}
+
+link l17 {
+    nodes {n7 n18}
+    bandwidth 0
+}
+
+link l18 {
+    nodes {n12 n19}
+    bandwidth 0
+}
+
+annotation a1 {
+    iconcoords {462.0 62.0}
+    type text
+    label {200.20.10.10}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    canvas c1
+}
+
+annotation a2 {
+    type text
+    iconcoords {60.0 338.0}
+    label {}
+    canvas c1
+}
+
+annotation a3 {
+    iconcoords {294.0 160.0}
+    type text
+    label {200.20.10.1}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    canvas c1
+}
+
+annotation a5 {
+    iconcoords {736.0 64.0}
+    type text
+    label {210.40.30.1}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    canvas c1
+}
+
+annotation a6 {
+    iconcoords {788.0 158.0}
+    type text
+    label {210.40.30.2}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    canvas c1
+}
+
+annotation a7 {
+    type text
+    iconcoords {484.0 172.0}
+    label {}
+    canvas c1
+}
+
+annotation a8 {
+    iconcoords {488.0 190.0}
+    type text
+    label {200.20.1.2}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    canvas c1
+}
+
+annotation a9 {
+    iconcoords {819.0 230.0}
+    type text
+    label {200.20.2.1}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    canvas c1
+}
+
+annotation a10 {
+    iconcoords {677.0 232.0}
+    type text
+    label {200.20.1.1}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    canvas c1
+}
+
+annotation a11 {
+    iconcoords {1021.0 188.0}
+    type text
+    label {200.20.2.2}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    canvas c1
+}
+
+annotation a4 {
+    iconcoords {953.0 242.0}
+    type text
+    label {200.20.20.1}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    canvas c1
+}
+
+annotation a12 {
+    iconcoords {811.0 376.0}
+    type text
+    label {200.20.20.10}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    canvas c1
+}
+
+annotation a13 {
+    iconcoords {307.0 230.0}
+    type text
+    label {200.20.11.1}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize 12
+    canvas c1
+}
+
+annotation a14 {
+    iconcoords {45.0 144.0}
+    type text
+    label {200.20.11.10}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize 12
+    canvas c1
+}
+
+annotation a15 {
+    iconcoords {320.0 264.0}
+    type text
+    label {200.20.12.1}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize 12
+    canvas c1
+}
+
+annotation a16 {
+    iconcoords {110.0 340.0}
+    type text
+    label {200.20.12.10}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize 12
+    canvas c1
+}
+
+annotation a17 {
+    iconcoords {1190.0 240.0}
+    type text
+    label {200.20.21.1}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize 12
+    canvas c1
+}
+
+annotation a18 {
+    iconcoords {1100.0 402.0}
+    type text
+    label {200.20.21.10}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize 12
+    canvas c1
+}
+
+annotation a19 {
+    iconcoords {153.0 64.0}
+    type text
+    label {200.20.10.11}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize 12
+    canvas c1
+}
+
+annotation a20 {
+    iconcoords {978.0 396.0}
+    type text
+    label {200.20.20.11}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize 12
+    canvas c1
+}
+
+annotation a21 {
+    iconcoords {1257.0 404.0}
+    type text
+    label {200.20.21.11}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize 12
+    canvas c1
+}
+
+annotation a22 {
+    iconcoords {20.0 298.0}
+    type text
+    label {200.20.11.11}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize 12
+    canvas c1
+}
+
+annotation a23 {
+    iconcoords {475.0 360.0}
+    type text
+    label {200.20.12.11}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize 12
+    canvas c1
+}
+
+canvas c1 {
+    name {Canvas1}
+    refpt {0 0 47.5791667 -122.132322 2.0}
+    scale {150.0}
+    size {1500 1000}
+}
+
+option global {
+    interface_names yes
+    ip_addresses yes
+    ipv6_addresses yes
+    node_labels yes
+    link_labels yes
+    show_api no
+    background_images no
+    annotations yes
+    grid yes
+    traffic_start 0
+}
+
+option session {
+}
+

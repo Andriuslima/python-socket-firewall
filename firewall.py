@@ -21,7 +21,7 @@ ICMP_HEADER_PATTERN = "!BBBBH"
 
 INTERFACE = sys.argv[1].strip()
 HOST_MAC = ""
-GATEWAY_MAC = "8c:44:4f:7b:26:2e"
+GATEWAY_MAC = sys.argv[2].strip()
 
 ICMP_TYPES = {
     0: "Echo Reply",
@@ -142,7 +142,7 @@ while 1:
 
             eth_hdr = pack("!6s6sH", dest_mac, source_mac, protocol)
 
-            red_packet = eth_hdr + packet[ETH_HEADER_LEN+1:]
+            red_packet = eth_hdr + packet[ETH_HEADER_LEN:]
 
             x = s.send(red_packet)
-            print(f"Packate redirected to {GATEWAY_MAC} with ans: {x}")
+            print(f"Packet redirected to {dest_mac}  from {source_mac} with ans: {x}")
