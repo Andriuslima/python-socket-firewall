@@ -172,7 +172,10 @@ while running:
                 print("Ok, moving on...")
             else:
                 index = int(line.strip())
-                flows[index].enabled = not flows[index].enabled
+                if index >= 0 and index < len(flows):
+                    flows[index].enabled = not flows[index].enabled
+                else:
+                    print("use a valid index")
             sleep(0.5)
 
         sleep(0.1)
