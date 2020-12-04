@@ -333,8 +333,8 @@ node n9 {
 	!
     }
     canvas c1
-    iconcoords {114.0 184.0}
-    labelcoords {114.0 216.0}
+    iconcoords {84.0 260.0}
+    labelcoords {84.0 292.0}
     interface-peer {eth0 n13}
     services {UserDefined}
     custom-config {
@@ -352,6 +352,8 @@ node n9 {
 	ip addr add 200.20.11.10/24 dev eth0
 	
 	ip route add default via 200.20.11.1 dev eth0
+	
+	export TERM=xterms
 	}
     }
 }
@@ -479,8 +481,8 @@ node n16 {
 	!
     }
     canvas c1
-    iconcoords {108.0 260.0}
-    labelcoords {108.0 292.0}
+    iconcoords {82.0 160.0}
+    labelcoords {82.0 192.0}
     interface-peer {eth0 n13}
     custom-config {
 	custom-config-id service:UserDefined
@@ -496,7 +498,9 @@ node n16 {
 	config {
 	ip addr add 200.20.11.11/24 dev eth0
 	
-	ip route add default via 200.20.11.1 dev eth0
+	ip route add default via 200.20.11.10 dev eth0
+	
+	export TERM=xterms
 	}
     }
     services {UserDefined}
@@ -820,17 +824,17 @@ annotation a13 {
     label {200.20.11.1}
     labelcolor black
     fontfamily {Arial}
-    fontsize 12
+    fontsize {12}
     canvas c1
 }
 
 annotation a14 {
-    iconcoords {45.0 144.0}
+    iconcoords {34.0 303.0}
     type text
     label {200.20.11.10}
     labelcolor black
     fontfamily {Arial}
-    fontsize 12
+    fontsize {12}
     canvas c1
 }
 
@@ -840,7 +844,7 @@ annotation a15 {
     label {200.20.12.1}
     labelcolor black
     fontfamily {Arial}
-    fontsize 12
+    fontsize {12}
     canvas c1
 }
 
@@ -850,7 +854,7 @@ annotation a16 {
     label {200.20.12.10}
     labelcolor black
     fontfamily {Arial}
-    fontsize 12
+    fontsize {12}
     canvas c1
 }
 
@@ -860,7 +864,7 @@ annotation a17 {
     label {200.20.21.1}
     labelcolor black
     fontfamily {Arial}
-    fontsize 12
+    fontsize {12}
     canvas c1
 }
 
@@ -870,7 +874,7 @@ annotation a18 {
     label {200.20.21.10}
     labelcolor black
     fontfamily {Arial}
-    fontsize 12
+    fontsize {12}
     canvas c1
 }
 
@@ -880,7 +884,7 @@ annotation a19 {
     label {200.20.10.11}
     labelcolor black
     fontfamily {Arial}
-    fontsize 12
+    fontsize {12}
     canvas c1
 }
 
@@ -890,7 +894,7 @@ annotation a20 {
     label {200.20.20.11}
     labelcolor black
     fontfamily {Arial}
-    fontsize 12
+    fontsize {12}
     canvas c1
 }
 
@@ -900,17 +904,17 @@ annotation a21 {
     label {200.20.21.11}
     labelcolor black
     fontfamily {Arial}
-    fontsize 12
+    fontsize {12}
     canvas c1
 }
 
 annotation a22 {
-    iconcoords {20.0 298.0}
+    iconcoords {35.0 203.0}
     type text
     label {200.20.11.11}
     labelcolor black
     fontfamily {Arial}
-    fontsize 12
+    fontsize {12}
     canvas c1
 }
 
@@ -920,7 +924,7 @@ annotation a23 {
     label {200.20.12.11}
     labelcolor black
     fontfamily {Arial}
-    fontsize 12
+    fontsize {12}
     canvas c1
 }
 
