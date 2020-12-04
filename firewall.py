@@ -57,22 +57,22 @@ def search_and_log_tcp(packet, protocol, iph_length):
         source_port = tcp[0]
         dest_port = tcp[1]
 
+        return source_port, dest_port
+    else:
+        return None, None
         # print("Protocol Name: TCP")
         # print("Source Port: " + str(source_port))
         # print("Destination Port: " + str(dest_port))
 
 
 def search_and_log_udp(packet, protocol, iph_length):
-    if protocol == UDP_PROTOCOL_NUMBER:
-        u = iph_length + ETH_HEADER_LEN
-        udph = unpack(UDP_HEADER_PATTERN, packet[u:u + 8])
+    u = iph_length + ETH_HEADER_LEN
+    udph = unpack(UDP_HEADER_PATTERN, packet[u:u + 8])
 
-        source_port = udph[0]
-        dest_port = udph[1]
+    source_port = udph[0]
+    dest_port = udph[1]
 
-        # print("Protocol Name: UDP")
-        # print("Source Port: " + str(source_port))
-        # print("Destination Port: " + str(dest_port))
+    return source_port, dest_port
 
 
 def search_and_log_icmp(packet, protocol, iph_length):
@@ -86,16 +86,9 @@ def search_and_log_icmp(packet, protocol, iph_length):
         icmp_id = icmp[3]
         icmp_sequence = icmp[4]
 
-        # print("Protocol Name: ICMP")
-        # print("Type: ", ICMP_TYPES.get(icmp_type))
         if icmp_type == 0 or icmp_type == 8:
             h_size = ETH_HEADER_LEN + iph_length + 4
             data = packet[h_size:]
-            # print("ICMP ID: ", str(icmp_id))
-            # print("ICMP Sequence: ", str(icmp_sequence))
-            # print("ICMP code:", str(code))
-            # print("ICMP checksum:", str(checksum))
-            # print("Payload: ", str(data))
 
 
 def print_flows():
@@ -149,8 +142,10 @@ while running:
                 if ip_protocol in SUPPORTED_PROTOCOLS:
                     ip_pack_type = eth[2]
                     search_and_log_icmp(packet, ip_protocol, iph_length)
-                    search_and_log_tcp(packet, ip_protocol, iph_length)
-                    search_and_log_udp(packet, ip_protocol, iph_length)
+                    if ip_protocol == TCP_PROTOCOL_NUMBER:
+                        port_src, port_dst = search_and_log_tcp(packet, ip_protocol, iph_length)
+                    elif ip_protocol == UDP_PROTOCOL_NUMBER:
+                        port_src, port_dst = search_and_log_udp(packet, ip_protocol, iph_length)
 
                     flow = PacketFlow(str(src), str(dst), str(ip_protocol), str(port_src), str(port_dst))
                     flow_id = flow.id
@@ -168,6 +163,8 @@ while running:
                         eth_hdr = pack("!6s6sH", dest_mac, source_mac, eth_protocol)
 
                         red_packet = eth_hdr + packet[ETH_HEADER_LEN:]
+
+                        flow.size += len(red_packet)
 
                         x = s.send(red_packet)
                 print_flows()
